@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Mẫu System Instructions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .storage-info {
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .storage-info button {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            text-decoration: underline;
+            margin: 0 5px;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            height: 100%;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: #ecf0f1;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .filter-option.active {
+            background: #3498db;
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .category-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .category-item.active {
+            background: #3498db;
+        }
+
+        .category-item i {
+            font-size: 1.1rem;
+        }
+
+        .category-count {
+            margin-left: auto;
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .category-delete {
+            position: absolute;
+            right: 10px;
+            background: rgba(231, 76, 60, 0.8);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-size: 0.7rem;
+        }
+
+        .category-item:hover .category-delete {
+            opacity: 1;
+        }
+
+        .main-content {
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .samples-count {
+            background: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .samples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .sample-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #3498db;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
+
+        .sample-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .sample-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .sample-name {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .sample-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sample-action {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sample-action:hover {
+            background: #ecf0f1;
+            color: #3498db;
+        }
+
+        .sample-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        .sample-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .sample-description {
+            color: #5a6c7d;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .sample-content {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .sample-link {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .sample-link:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        .sample-link.disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .sample-link.disabled:hover {
+            transform: none;
+            background: #95a5a6;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .sample-card:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Floating Action Button */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+
+        .fab-main {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e74c3c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fab-main:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .fab-options {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fab-option {
+            background: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .fab-option:hover {
+            background: #2980b9;
+            transform: translateX(-5px);
+        }
+
+        .fab-options.show {
+            display: flex;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .content-type-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .toggle-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-option.active {
+            border-color: #3498db;
+            background: #3498db;
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .content-preview {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .samples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .fab-options {
+                right: auto;
+                left: 0;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+
+        .latex-preview {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-code"></i> Quản lý Mẫu System Instructions</h1>
+            <p>Lưu trữ và quản lý các mẫu hướng dẫn LaTeX và văn bản dài</p>
+            <div class="storage-info">
+                Dữ liệu được lưu trữ cục bộ • 
+                <button onclick="exportData()">Xuất dữ liệu</button> • 
+                <button onclick="importData()">Nhập dữ liệu</button> • 
+                <button onclick="showStorageInfo()">Thông tin lưu trữ</button>
+            </div>
+        </div>
+
+        <div class="app-container">
+            <div class="sidebar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm mẫu...">
+                </div>
+
+                <div class="filter-section">
+                    <h3><i class="fas fa-filter"></i> Lọc theo loại</h3>
+                    <div class="filter-options">
+                        <div class="filter-option active" data-type="all">
+                            <i class="fas fa-th-large"></i>
+                            <span>Tất cả mẫu</span>
+                        </div>
+                        <div class="filter-option" data-type="latex">
+                            <i class="fas fa-square-root-alt"></i>
+                            <span>LaTeX</span>
+                        </div>
+                        <div class="filter-option" data-type="text">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Văn bản</span>
+                        </div>
+                        <div class="filter-option" data-type="link">
+                            <i class="fas fa-link"></i>
+                            <span>Đường link</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h3><i class="fas fa-folder"></i> Danh mục</h3>
+                    <ul class="category-list" id="categoryList">
+                        <!-- Categories will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="content-header">
+                    <h2 class="content-title" id="currentCategory">
+                        <i class="fas fa-th-large"></i> 
+                        <span id="categoryName">Tất cả mẫu</span>
+                        <span class="samples-count" id="samplesCount">0</span>
+                    </h2>
+                </div>
+
+                <div class="samples-grid" id="samplesGrid">
+                    <!-- Sample cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab-container">
+        <div class="fab-options" id="fabOptions">
+            <div class="fab-option" onclick="showAddCategoryModal()">
+                <i class="fas fa-folder-plus"></i>
+                <span>Thêm danh mục</span>
+            </div>
+            <div class="fab-option" onclick="showAddSampleModal()">
+                <i class="fas fa-plus-circle"></i>
+                <span>Thêm mẫu mới</span>
+            </div>
+        </div>
+        <div class="fab-main" id="fabMain">
+            <i class="fas fa-plus"></i>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal" id="addCategoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Thêm danh mục mới</h3>
+                <button class="close-btn" onclick="hideAddCategoryModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="categoryNameInput">Tên danh mục</label>
+                <input type="text" id="categoryNameInput" placeholder="Nhập tên danh mục...">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="hideAddCategoryModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="addNewCategory()">Thêm danh mục</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Sample Modal -->
+    <div class="modal" id="addSampleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Thêm mẫu mới</h3>
+                <button class="close-btn" onclick="hideAddSampleModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="sampleNameInput">Tên mẫu *</label>
+                <input type="text" id="sampleNameInput" placeholder="Nhập tên mẫu...">
+            </div>
+            <div class="form-group">
+                <label for="sampleCategorySelect">Danh mục *</label>
+                <select id="sampleCategorySelect">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sampleDescriptionInput">Mô tả</label>
+                <textarea id="sampleDescriptionInput" placeholder="Mô tả ngắn về mẫu..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Loại nội dung *</label>
+                <div class="content-type-toggle">
+                    <div class="toggle-option active" data-type="latex" onclick="toggleContentType('latex')">
+                        <i class="fas fa-square-root-alt"></i> LaTeX
+                    </div>
+                    <div class="toggle-option" data-type="text" onclick="toggleContentType('text')">
+                        <i class="fas fa-file-alt"></i> Văn bản
+                    </div>
+                    <div class="toggle-option" data-type="link" onclick="toggleContentType('link')">
+                        <i class="fas fa-link"></i> Đường link
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="contentInputGroup">
+                <label for="sampleContentInput">Nội dung LaTeX *</label>
+                <textarea id="sampleContentInput" placeholder="Nhập nội dung LaTeX..." style="min-height: 200px;"></textarea>
+                <div class="help-text">Hỗ trợ cú pháp LaTeX cho system instructions</div>
+                <div class="latex-preview" id="latexPreview">
+                    Xem trước sẽ hiển thị ở đây...
+                </div>
+            </div>
+            <div class="form-group" id="linkInputGroup" style="display: none;">
+                <label for="sampleLinkInput">Đường link *</label>
+                <input type="url" id="sampleLinkInput" placeholder="https://ideone.com/... hoặc đường link khác">
+                <div class="help-text">Dán đường link từ ideone.com hoặc trang chia sẻ code khác</div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="hideAddSampleModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="addNewSample()">Thêm mẫu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Sample Modal -->
+    <div class="modal" id="viewSampleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="viewSampleTitle">Xem mẫu</h3>
+                <button class="close-btn" onclick="hideViewSampleModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Tên mẫu</label>
+                <div class="content-preview" id="viewSampleName"></div>
+            </div>
+            <div class="form-group">
+                <label>Danh mục</label>
+                <div class="content-preview" id="viewSampleCategory"></div>
+            </div>
+            <div class="form-group">
+                <label>Mô tả</label>
+                <div class="content-preview" id="viewSampleDescription"></div>
+            </div>
+            <div class="form-group">
+                <label>Nội dung</label>
+                <div class="content-preview" id="viewSampleContent"></div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="hideViewSampleModal()">Đóng</button>
+                <button class="btn btn-success" onclick="copySampleContent()">Sao chép nội dung</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Data Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Nhập dữ liệu</h3>
+                <button class="close-btn" onclick="hideImportModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="importDataInput">Dán dữ liệu JSON vào đây</label>
+                <textarea id="importDataInput" placeholder='{"categories": [...], "samples": [...]}' style="min-height: 200px;"></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="hideImportModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="processImport()">Nhập dữ liệu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Storage keys
+        const STORAGE_KEYS = {
+            CATEGORIES: 'system_instructions_categories',
+            SAMPLES: 'system_instructions_samples'
+        };
+
+        // Default data
+        const defaultCategories = [
+            { id: 'all', name: 'Tất cả mẫu', icon: 'fas fa-th-large', count: 0 },
+            { id: 'latex-templates', name: 'Mẫu LaTeX', icon: 'fas fa-square-root-alt', count: 0 },
+            { id: 'text-templates', name: 'Mẫu văn bản', icon: 'fas fa-file-alt', count: 0 },
+            { id: 'ai-prompts', name: 'AI Prompts', icon: 'fas fa-robot', count: 0 },
+            { id: 'code-snippets', name: 'Đoạn code', icon: 'fas fa-code', count: 0 }
+        ];
+
+        const defaultSamples = [
+            {
+                id: 1,
+                name: "Mẫu LaTeX cơ bản",
+                description: "Mẫu LaTeX cơ bản cho system instructions",
+                category: "latex-templates",
+                type: "latex",
+                content: "\\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage{vietnam}\n\n\\begin{document}\n\n\\section*{System Instructions}\n\n\\textbf{Mục tiêu:} Hướng dẫn hệ thống AI\n\n\\textbf{Yêu cầu:}\n\\begin{itemize}\n    \\item Phản hồi bằng tiếng Việt\n    \\item Sử dụng ví dụ cụ thể\n    \\item Giải thích rõ ràng\n\\end{itemize}\n\n\\end{document}",
+                link: "",
+                created: "2024-01-15",
+                updated: "2024-01-15"
+            },
+            {
+                id: 2,
+                name: "Prompt engineering template",
+                description: "Mẫu cho kỹ thuật prompt engineering",
+                category: "ai-prompts",
+                type: "text",
+                content: "Bạn là một trợ lý AI chuyên nghiệp. Hãy:\n\n1. Phân tích câu hỏi kỹ lưỡng\n2. Đưa ra câu trả lời có cấu trúc rõ ràng\n3. Sử dụng ví dụ minh họa khi cần\n4. Kiểm tra tính chính xác của thông tin\n\nĐịnh dạng phản hồi:\n- Phần tóm tắt\n- Phần giải thích chi tiết\n- Phần kết luận",
+                link: "",
+                created: "2024-01-20",
+                updated: "2024-01-20"
+            }
+        ];
+
+        // Load data from localStorage or use defaults
+        let categories = loadFromStorage(STORAGE_KEYS.CATEGORIES) || defaultCategories;
+        let samplesData = loadFromStorage(STORAGE_KEYS.SAMPLES) || defaultSamples;
+
+        // DOM Elements
+        const categoryList = document.getElementById('categoryList');
+        const samplesGrid = document.getElementById('samplesGrid');
+        const categoryName = document.getElementById('categoryName');
+        const samplesCount = document.getElementById('samplesCount');
+        const searchInput = document.getElementById('searchInput');
+        const fabMain = document.getElementById('fabMain');
+        const fabOptions = document.getElementById('fabOptions');
+        const addCategoryModal = document.getElementById('addCategoryModal');
+        const addSampleModal = document.getElementById('addSampleModal');
+        const viewSampleModal = document.getElementById('viewSampleModal');
+        const importModal = document.getElementById('importModal');
+        const sampleCategorySelect = document.getElementById('sampleCategorySelect');
+        const contentInputGroup = document.getElementById('contentInputGroup');
+        const linkInputGroup = document.getElementById('linkInputGroup');
+        const latexPreview = document.getElementById('latexPreview');
+
+        let currentContentType = 'latex';
+        let currentViewSample = null;
+
+        // Storage functions
+        function loadFromStorage(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error('Error loading from storage:', error);
+                return null;
+            }
+        }
+
+        function saveToStorage(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                return true;
+            } catch (error) {
+                console.error('Error saving to storage:', error);
+                alert('Lỗi khi lưu dữ liệu. Có thể bộ nhớ đã đầy.');
+                return false;
+            }
+        }
+
+        function saveAllData() {
+            saveToStorage(STORAGE_KEYS.CATEGORIES, categories);
+            saveToStorage(STORAGE_KEYS.SAMPLES, samplesData);
+        }
+
+        function exportData() {
+            const data = {
+                categories: categories,
+                samples: samplesData,
+                exportedAt: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `system-instructions-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('Dữ liệu đã được xuất thành công!');
+        }
+
+        function importData() {
+            importModal.classList.add('show');
+        }
+
+        function hideImportModal() {
+            importModal.classList.remove('show');
+            document.getElementById('importDataInput').value = '';
+        }
+
+        function processImport() {
+            const importData = document.getElementById('importDataInput').value.trim();
+            
+            if (!importData) {
+                alert('Vui lòng nhập dữ liệu JSON');
+                return;
+            }
+
+            try {
+                const parsedData = JSON.parse(importData);
+                
+                if (!parsedData.categories || !parsedData.samples) {
+                    throw new Error('Dữ liệu không hợp lệ');
+                }
+
+                if (confirm('Bạn có chắc chắn muốn nhập dữ liệu mới? Dữ liệu hiện tại sẽ bị ghi đè!')) {
+                    categories = parsedData.categories;
+                    samplesData = parsedData.samples;
+                    saveAllData();
+                    initApp();
+                    hideImportModal();
+                    alert('Nhập dữ liệu thành công!');
+                }
+            } catch (error) {
+                alert('Dữ liệu JSON không hợp lệ: ' + error.message);
+            }
+        }
+
+        function showStorageInfo() {
+            const totalSpace = 5 * 1024 * 1024;
+            let usedSpace = 0;
+            
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    usedSpace += localStorage[key].length * 2;
+                }
+            }
+            
+            const usedPercent = ((usedSpace / totalSpace) * 100).toFixed(1);
+            
+            alert(`Thông tin lưu trữ:\n\n` +
+                  `• Đã sử dụng: ${(usedSpace / 1024).toFixed(1)} KB / ${(totalSpace / 1024).toFixed(0)} KB\n` +
+                  `• Tỷ lệ sử dụng: ${usedPercent}%\n` +
+                  `• Số danh mục: ${categories.length}\n` +
+                  `• Số mẫu: ${samplesData.length}\n\n` +
+                  `Dữ liệu được lưu trữ cục bộ trên trình duyệt của bạn.`);
+        }
+
+        // Initialize the application
+        function initApp() {
+            updateCategoryCounts();
+            renderCategories();
+            renderSamples('all', 'all');
+            setupEventListeners();
+            populateCategorySelect();
+        }
+
+        // Update sample counts for each category
+        function updateCategoryCounts() {
+            categories.forEach(category => {
+                if (category.id === 'all') {
+                    category.count = samplesData.length;
+                } else {
+                    category.count = samplesData.filter(sample => sample.category === category.id).length;
+                }
+            });
+        }
+
+        // Render category list
+        function renderCategories() {
+            categoryList.innerHTML = '';
+            categories.forEach(category => {
+                if (category.id === 'all') return;
+                
+                const categoryItem = document.createElement('li');
+                categoryItem.className = 'category-item';
+                categoryItem.dataset.category = category.id;
+                categoryItem.innerHTML = `
+                    <i class="${category.icon}"></i>
+                    <span>${category.name}</span>
+                    <span class="category-count">${category.count}</span>
+                    ${category.id !== 'all' ? '<button class="category-delete" onclick="deleteCategory(\'' + category.id + '\')"><i class="fas fa-times"></i></button>' : ''}
+                `;
+                categoryList.appendChild(categoryItem);
+            });
+        }
+
+        // Render samples grid
+        function renderSamples(categoryId, contentType = 'all', searchTerm = '') {
+            let filteredSamples = samplesData;
+            
+            // Filter by category
+            if (categoryId !== 'all') {
+                filteredSamples = filteredSamples.filter(sample => sample.category === categoryId);
+            }
+            
+            // Filter by content type
+            if (contentType !== 'all') {
+                filteredSamples = filteredSamples.filter(sample => sample.type === contentType);
+            }
+            
+            // Filter by search term
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filteredSamples = filteredSamples.filter(sample => 
+                    sample.name.toLowerCase().includes(term) || 
+                    sample.description.toLowerCase().includes(term) ||
+                    sample.content.toLowerCase().includes(term)
+                );
+            }
+            
+            // Update UI
+            const currentCategory = categories.find(cat => cat.id === categoryId);
+            categoryName.textContent = currentCategory.name;
+            samplesCount.textContent = filteredSamples.length;
+            
+            // Render sample cards
+            samplesGrid.innerHTML = '';
+            
+            if (filteredSamples.length === 0) {
+                samplesGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-code"></i>
+                        <h3>Không tìm thấy mẫu nào</h3>
+                        <p>Hãy thử tìm kiếm với từ khóa khác hoặc chọn danh mục khác</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredSamples.forEach(sample => {
+                const category = categories.find(cat => cat.id === sample.category);
+                const sampleCard = document.createElement('div');
+                sampleCard.className = 'sample-card';
+                
+                const contentPreview = sample.type === 'link' 
+                    ? `Link: ${sample.link}`
+                    : sample.content.length > 150 
+                    ? sample.content.substring(0, 150) + '...'
+                    : sample.content;
+                
+                sampleCard.innerHTML = `
+                    <button class="delete-btn" onclick="deleteSample(${sample.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="sample-header">
+                        <h3 class="sample-name">${sample.name}</h3>
+                        <div class="sample-actions">
+                            <button class="sample-action" onclick="viewSample(${sample.id})" title="Xem chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="sample-action" onclick="editSample(${sample.id})" title="Chỉnh sửa">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="sample-action" onclick="copySampleContent(${sample.id})" title="Sao chép">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="sample-meta">
+                        <div class="sample-meta-item">
+                            <i class="fas fa-folder"></i>
+                            <span>${category.name}</span>
+                        </div>
+                        <div class="sample-meta-item">
+                            <i class="fas ${getTypeIcon(sample.type)}"></i>
+                            <span>${getTypeName(sample.type)}</span>
+                        </div>
+                        <div class="sample-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>${sample.updated || sample.created}</span>
+                        </div>
+                    </div>
+                    <div class="sample-description">
+                        ${sample.description || 'Không có mô tả'}
+                    </div>
+                    <div class="sample-content">
+                        ${contentPreview}
+                    </div>
+                    ${sample.type === 'link' ? 
+                        `<a href="${sample.link}" target="_blank" class="sample-link">
+                            <i class="fas fa-external-link-alt"></i> Truy cập link
+                        </a>` : 
+                        `<button class="sample-link" onclick="viewSample(${sample.id})">
+                            <i class="fas fa-eye"></i> Xem chi tiết
+                        </button>`
+                    }
+                `;
+                samplesGrid.appendChild(sampleCard);
+            });
+        }
+
+        function getTypeIcon(type) {
+            const icons = {
+                'latex': 'fa-square-root-alt',
+                'text': 'fa-file-alt',
+                'link': 'fa-link'
+            };
+            return icons[type] || 'fa-file';
+        }
+
+        function getTypeName(type) {
+            const names = {
+                'latex': 'LaTeX',
+                'text': 'Văn bản',
+                'link': 'Link'
+            };
+            return names[type] || 'Unknown';
+        }
+
+        // View sample details
+        function viewSample(sampleId) {
+            const sample = samplesData.find(s => s.id === sampleId);
+            if (!sample) return;
+
+            currentViewSample = sample;
+            
+            document.getElementById('viewSampleTitle').textContent = sample.name;
+            document.getElementById('viewSampleName').textContent = sample.name;
+            document.getElementById('viewSampleCategory').textContent = categories.find(c => c.id === sample.category)?.name || 'Unknown';
+            document.getElementById('viewSampleDescription').textContent = sample.description || 'Không có mô tả';
+            
+            const contentElement = document.getElementById('viewSampleContent');
+            if (sample.type === 'link') {
+                contentElement.innerHTML = `<a href="${sample.link}" target="_blank">${sample.link}</a>`;
+            } else {
+                contentElement.textContent = sample.content;
+            }
+            
+            viewSampleModal.classList.add('show');
+        }
+
+        function hideViewSampleModal() {
+            viewSampleModal.classList.remove('show');
+            currentViewSample = null;
+        }
+
+        // Copy sample content to clipboard
+        function copySampleContent(sampleId = null) {
+            const sample = sampleId ? samplesData.find(s => s.id === sampleId) : currentViewSample;
+            if (!sample) return;
+
+            const contentToCopy = sample.type === 'link' ? sample.link : sample.content;
+            
+            navigator.clipboard.writeText(contentToCopy).then(() => {
+                alert('Đã sao chép nội dung vào clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Lỗi khi sao chép nội dung');
+            });
+        }
+
+        // Delete sample
+        function deleteSample(sampleId) {
+            if (confirm('Bạn có chắc chắn muốn xóa mẫu này?')) {
+                samplesData = samplesData.filter(sample => sample.id !== sampleId);
+                updateCategoryCounts();
+                renderCategories();
+                saveAllData();
+                
+                const activeCategory = document.querySelector('.category-item.active');
+                const categoryId = activeCategory ? activeCategory.dataset.category : 'all';
+                const activeFilter = document.querySelector('.filter-option.active');
+                const contentType = activeFilter ? activeFilter.dataset.type : 'all';
+                renderSamples(categoryId, contentType, searchInput.value);
+            }
+        }
+
+        // Delete category
+        function deleteCategory(categoryId) {
+            if (categoryId === 'all') return;
+            
+            const samplesInCategory = samplesData.filter(sample => sample.category === categoryId);
+            
+            if (samplesInCategory.length > 0) {
+                if (!confirm(`Danh mục này có ${samplesInCategory.length} mẫu. Tất cả sẽ bị xóa. Bạn có chắc chắn?`)) {
+                    return;
+                }
+                samplesData = samplesData.filter(sample => sample.category !== categoryId);
+            }
+            
+            categories = categories.filter(category => category.id !== categoryId);
+            updateCategoryCounts();
+            renderCategories();
+            populateCategorySelect();
+            saveAllData();
+            
+            renderSamples('all', 'all', searchInput.value);
+        }
+
+        // Toggle content type in add sample form
+        function toggleContentType(type) {
+            currentContentType = type;
+            
+            // Update toggle buttons
+            document.querySelectorAll('.toggle-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.type === type);
+            });
+            
+            // Show/hide appropriate input groups
+            if (type === 'link') {
+                contentInputGroup.style.display = 'none';
+                linkInputGroup.style.display = 'block';
+            } else {
+                contentInputGroup.style.display = 'block';
+                linkInputGroup.style.display = 'none';
+                
+                // Update labels and placeholders
+                const label = contentInputGroup.querySelector('label');
+                const textarea = document.getElementById('sampleContentInput');
+                const helpText = contentInputGroup.querySelector('.help-text');
+                
+                if (type === 'latex') {
+                    label.textContent = 'Nội dung LaTeX *';
+                    textarea.placeholder = 'Nhập nội dung LaTeX...';
+                    helpText.textContent = 'Hỗ trợ cú pháp LaTeX cho system instructions';
+                    latexPreview.style.display = 'block';
+                } else {
+                    label.textContent = 'Nội dung văn bản *';
+                    textarea.placeholder = 'Nhập nội dung văn bản...';
+                    helpText.textContent = 'Nhập nội dung system instructions dạng văn bản thuần túy';
+                    latexPreview.style.display = 'none';
+                }
+            }
+        }
+
+        // Update LaTeX preview
+        function updateLatexPreview() {
+            if (currentContentType === 'latex') {
+                const content = document.getElementById('sampleContentInput').value;
+                latexPreview.textContent = content || 'Xem trước sẽ hiển thị ở đây...';
+            }
+        }
+
+        // Populate category select in modal
+        function populateCategorySelect() {
+            sampleCategorySelect.innerHTML = '';
+            categories.forEach(category => {
+                if (category.id !== 'all') {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    sampleCategorySelect.appendChild(option);
+                }
+            });
+        }
+
+        // FAB functionality
+        function toggleFabOptions() {
+            fabOptions.classList.toggle('show');
+        }
+
+        // Category modal functions
+        function showAddCategoryModal() {
+            addCategoryModal.classList.add('show');
+            fabOptions.classList.remove('show');
+        }
+
+        function hideAddCategoryModal() {
+            addCategoryModal.classList.remove('show');
+            document.getElementById('categoryNameInput').value = '';
+        }
+
+        function addNewCategory() {
+            const categoryName = document.getElementById('categoryNameInput').value.trim();
+            if (!categoryName) {
+                alert('Vui lòng nhập tên danh mục');
+                return;
+            }
+
+            if (categories.some(cat => cat.name.toLowerCase() === categoryName.toLowerCase())) {
+                alert('Tên danh mục đã tồn tại');
+                return;
+            }
+
+            const newCategory = {
+                id: 'category-' + Date.now(),
+                name: categoryName,
+                icon: 'fas fa-folder',
+                count: 0
+            };
+
+            categories.push(newCategory);
+            renderCategories();
+            populateCategorySelect();
+            saveAllData();
+            hideAddCategoryModal();
+            
+            alert('Thêm danh mục thành công!');
+        }
+
+        // Sample modal functions
+        function showAddSampleModal() {
+            addSampleModal.classList.add('show');
+            fabOptions.classList.remove('show');
+            // Reset form
+            document.getElementById('sampleNameInput').value = '';
+            document.getElementById('sampleDescriptionInput').value = '';
+            document.getElementById('sampleContentInput').value = '';
+            document.getElementById('sampleLinkInput').value = '';
+            toggleContentType('latex');
+        }
+
+        function hideAddSampleModal() {
+            addSampleModal.classList.remove('show');
+        }
+
+        function addNewSample() {
+            const name = document.getElementById('sampleNameInput').value.trim();
+            const category = document.getElementById('sampleCategorySelect').value;
+            const description = document.getElementById('sampleDescriptionInput').value.trim();
+            const content = document.getElementById('sampleContentInput').value.trim();
+            const link = document.getElementById('sampleLinkInput').value.trim();
+
+            if (!name || !category) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+                return;
+            }
+
+            if (currentContentType === 'link') {
+                if (!link) {
+                    alert('Vui lòng nhập đường link');
+                    return;
+                }
+                if (!link.startsWith('http://') && !link.startsWith('https://')) {
+                    alert('Vui lòng nhập đường link hợp lệ (bắt đầu với http:// hoặc https://)');
+                    return;
+                }
+            } else {
+                if (!content) {
+                    alert('Vui lòng nhập nội dung');
+                    return;
+                }
+            }
+
+            const newSample = {
+                id: Date.now(),
+                name: name,
+                description: description,
+                category: category,
+                type: currentContentType,
+                content: currentContentType === 'link' ? '' : content,
+                link: currentContentType === 'link' ? link : '',
+                created: new Date().toISOString().split('T')[0],
+                updated: new Date().toISOString().split('T')[0]
+            };
+
+            samplesData.push(newSample);
+            updateCategoryCounts();
+            renderCategories();
+            saveAllData();
+            
+            const activeCategory = document.querySelector('.category-item.active');
+            const categoryId = activeCategory ? activeCategory.dataset.category : 'all';
+            const activeFilter = document.querySelector('.filter-option.active');
+            const contentType = activeFilter ? activeFilter.dataset.type : 'all';
+            renderSamples(categoryId, contentType, searchInput.value);
+            
+            hideAddSampleModal();
+            alert('Thêm mẫu thành công!');
+        }
+
+        // Edit sample (placeholder for future implementation)
+        function editSample(sampleId) {
+            alert('Chức năng chỉnh sửa sẽ được triển khai trong phiên bản tiếp theo!');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Category click event
+            categoryList.addEventListener('click', (e) => {
+                const categoryItem = e.target.closest('.category-item');
+                if (categoryItem) {
+                    document.querySelectorAll('.category-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    categoryItem.classList.add('active');
+                    
+                    const categoryId = categoryItem.dataset.category;
+                    const activeFilter = document.querySelector('.filter-option.active');
+                    const contentType = activeFilter ? activeFilter.dataset.type : 'all';
+                    renderSamples(categoryId, contentType, searchInput.value);
+                }
+            });
+
+            // Filter option click event
+            document.querySelectorAll('.filter-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    option.classList.add('active');
+                    
+                    const contentType = option.dataset.type;
+                    const activeCategory = document.querySelector('.category-item.active');
+                    const categoryId = activeCategory ? activeCategory.dataset.category : 'all';
+                    renderSamples(categoryId, contentType, searchInput.value);
+                });
+            });
+
+            // Search input event
+            searchInput.addEventListener('input', (e) => {
+                const activeCategory = document.querySelector('.category-item.active');
+                const categoryId = activeCategory ? activeCategory.dataset.category : 'all';
+                const activeFilter = document.querySelector('.filter-option.active');
+                const contentType = activeFilter ? activeFilter.dataset.type : 'all';
+                renderSamples(categoryId, contentType, e.target.value);
+            });
+
+            // LaTeX preview update
+            document.getElementById('sampleContentInput').addEventListener('input', updateLatexPreview);
+
+            // FAB click event
+            fabMain.addEventListener('click', toggleFabOptions);
+
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === addCategoryModal) hideAddCategoryModal();
+                if (e.target === addSampleModal) hideAddSampleModal();
+                if (e.target === viewSampleModal) hideViewSampleModal();
+                if (e.target === importModal) hideImportModal();
+            });
+
+            // Close FAB options when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!fabMain.contains(e.target) && !fabOptions.contains(e.target)) {
+                    fabOptions.classList.remove('show');
+                }
+            });
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
